@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     # Load previous checkpoints if continue training
     if opt.continue_train:
-        checkpoint_path = os.path.join(opt.checkpoints_dir, f'{opt.name}_latest.pth')
+        checkpoint_path = os.path.join(opt.checkpoints_dir, f'latest_{opt.name}.pth')
         if os.path.exists(checkpoint_path):
             load_networks(model, checkpoint_path)
 
