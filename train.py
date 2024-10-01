@@ -23,11 +23,18 @@ def save_networks(model, save_suffix):
 def load_networks(model, checkpoint_path):
     """Loads the model and optimizer states."""
     checkpoint = torch.load(checkpoint_path)
-    model.netG.load_state_dict(checkpoint['model'])      # Load generator model weights
-    model.optimizer.load_state_dict(checkpoint['optimizer'])  # Load optimizer state
-    model.epoch = checkpoint['epoch']                      # Restore current epoch
-    model.iteration = checkpoint['iter']                   # Restore current iteration
-    print(f'Loaded checkpoint from {checkpoint_path}')
+
+    # Load generator model weights
+    model.netG.load_state_dict(checkpoint['model'])  
+    # Load optimizer state
+    model.optimizer.load_state_dict(checkpoint['optimizer'])  
+    # Restore current epoch
+    model.epoch = checkpoint['epoch']                      
+    # Restore current iteration
+    model.iteration = checkpoint['iter']                   
+
+    # Fixed print statement to show loaded epoch and iteration correctly
+    print(f'Loaded checkpoint from {checkpoint_path} with epoch: {model.epoch}, iteration: {model.iteration}')
 
 if __name__ == '__main__':
     opt = TrainOptions().parse()   # get training options
