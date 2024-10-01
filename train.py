@@ -21,7 +21,7 @@ def save_networks(model, save_suffix):
     print(f'Saved model checkpoints to {save_path}')
 
 def load_networks(model, checkpoint_path):
-    """Loads the model and optimizer states."""'
+    """Loads the model and optimizer states."""
     print("loading")
     checkpoint = torch.load(checkpoint_path)
 
