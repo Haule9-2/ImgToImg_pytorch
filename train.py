@@ -1,8 +1,33 @@
 import time
+import os
+import torch
 from options.train_options import TrainOptions
 from data import create_dataset
 from models import create_model
 from util.visualizer import Visualizer
+
+def save_networks(model, save_suffix):
+    """Saves the model and optimizer states."""
+    save_path = os.path.join(model.checkpoints_dir, f'{model.name}_{save_suffix}.pth')
+    
+    state_dict = {
+        'model': model.netG.state_dict(),          # Save generator model state
+        'optimizer': model.optimizer.state_dict(),  # Save optimizer state
+        'epoch': model.epoch,                       # Save current epoch
+        'iter': model.iteration                     # Save current iteration
+    }
+    
+    torch.save(state_dict, save_path)
+    print(f'Saved model checkpoints to {save_path}')
+
+def load_networks(model, checkpoint_path):
+    """Loads the model and optimizer states."""
+    checkpoint = torch.load(checkpoint_path)
+    model.netG.load_state_dict(checkpoint['model'])      # Load generator model weights
+    model.optimizer.load_state_dict(checkpoint['optimizer'])  # Load optimizer state
+    model.epoch = checkpoint['epoch']                      # Restore current epoch
+    model.iteration = checkpoint['iter']                   # Restore current iteration
+    print(f'Loaded checkpoint from {checkpoint_path}')
 
 if __name__ == '__main__':
     opt = TrainOptions().parse()   # get training options
@@ -14,6 +39,12 @@ if __name__ == '__main__':
     model.setup(opt)               # regular setup: load and print networks; create schedulers
     visualizer = Visualizer(opt)   # create a visualizer that display/save images and plots
     total_iters = 0                # the total number of training iterations
+
+    # Load previous checkpoints if continue training
+    if opt.continue_train:
+        checkpoint_path = os.path.join(opt.checkpoints_dir, f'{opt.name}_latest.pth')
+        if os.path.exists(checkpoint_path):
+            load_networks(model, checkpoint_path)
 
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):    
         epoch_start_time = time.time()  # timer for entire epoch
@@ -45,15 +76,15 @@ if __name__ == '__main__':
                     visualizer.plot_current_losses(epoch, float(epoch_iter) / dataset_size, losses)
 
             if total_iters % opt.save_latest_freq == 0:   
-                print('saving the latest model (epoch %d, total_iters %d)' % (epoch, total_iters))
+                print('Saving the latest model (epoch %d, total_iters %d)' % (epoch, total_iters))
                 save_suffix = 'iter_%d' % total_iters if opt.save_by_iter else 'latest'
-                model.save_networks(save_suffix)
+                save_networks(model, save_suffix)  # Save networks
 
             iter_data_time = time.time()
         
         if epoch % opt.save_epoch_freq == 0:              
-            print('saving the model at the end of epoch %d, iters %d' % (epoch, total_iters))
-            model.save_networks('latest')
-            model.save_networks(epoch)
+            print('Saving the model at the end of epoch %d, iters %d' % (epoch, total_iters))
+            save_networks(model, 'latest')  # Save latest model
+            save_networks(model, epoch)      # Save model by epoch
 
         print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.n_epochs + opt.n_epochs_decay, time.time() - epoch_start_time))
