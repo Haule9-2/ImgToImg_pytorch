@@ -26,7 +26,6 @@ class GetData(object):
 
     def __init__(self, technique='cyclegan', verbose=True):
         url_dict = {
-            'pix2pix': 'http://efrosgans.eecs.berkeley.edu/pix2pix/datasets/',
             'cyclegan': 'https://people.eecs.berkeley.edu/~taesung_park/CycleGAN/datasets'
         }
         self.url = url_dict.get(technique.lower())
