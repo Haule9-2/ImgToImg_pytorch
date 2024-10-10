@@ -34,8 +34,8 @@ This repository provides an implementation of a CycleGAN model for image-to-imag
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/img-translation-cyclegan.git
-    cd img-translation-cyclegan
+    git clone https://github.com/Haule9-2/ImgToImg_pytorch.git
+    cd ImgToImg_pytorch
     ```
 
 2. Install the required dependencies:
@@ -99,7 +99,7 @@ After training your CycleGAN model, you can visualize the translated images gene
 You can visualize the translated images using my web app. Simply follow these steps:
 
 1. **Visit the Web App**: Go to the following link to access the web interface:
-   [Your Web Deployment GitHub Repository](https://github.com/Haule9-2/image-translation-cyclegan-web-app.git) (update with your actual repo link).
+   (https://github.com/Haule9-2/image-translation-cyclegan-web-app.git).
 
 2. **Upload Images**: Use the interface to upload images you want to translate. 
 
